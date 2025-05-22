@@ -17,21 +17,9 @@ import toast from "react-hot-toast";
 import { cn } from "../../utils/cn";
 import { AddEmployeeModal } from "./employee-modal";
 import { GET_EMPLOYEES } from "@/utils/mutations";
-
-// Employee interface
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  age: number;
-  class: string;
-  attendance: number;
-  subjects: string[];
-  department: string;
-  position: string;
-  joinDate: string;
-  profileImage?: string;
-}
+import { Employee } from "../../types/employee";
+import { DEPARTMENTS, CLASSES, SORT_OPTIONS } from "../../constants/employee";
+import { useAuth } from "@/hooks/useAuth";
 
 // View type
 type ViewType = "grid" | "list";
@@ -49,16 +37,7 @@ const EmployeesPage = () => {
     class: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Options for filters and sorting
-  const departments = ["Engineering", "Marketing", "Sales", "Finance", "HR"];
-  const classes = ["Senior", "Mid-level", "Junior", "Intern"];
-  const sortOptions = [
-    { value: "name", label: "Name" },
-    { value: "age", label: "Age" },
-    { value: "attendance", label: "Attendance" },
-    { value: "joinDate", label: "Join Date" },
-  ];
+  const { user } = useAuth();
 
   // Fetch employees data
   const { loading, data, refetch } = useQuery(GET_EMPLOYEES, {
@@ -229,14 +208,16 @@ const EmployeesPage = () => {
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
-          <button
-            type="button"
-            className="btn-primary flex items-center"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add employee
-          </button>
+          {user?.role === "ADMIN" && (
+            <button
+              type="button"
+              className="btn-primary flex items-center"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add employee
+            </button>
+          )}
           <AddEmployeeModal
             open={isModalOpen}
             onClose={() => setIsModalOpen(false)}
@@ -275,11 +256,11 @@ const EmployeesPage = () => {
               ) : (
                 <SortDesc className="h-4 w-4 mr-1" />
               )}
-              Sort: {sortOptions.find((opt) => opt.value === sortBy)?.label}
+              Sort: {SORT_OPTIONS.find((opt) => opt.value === sortBy)?.label}
               <ChevronDown className="ml-1 h-4 w-4" />
             </button>
             <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
-              {sortOptions.map((option) => (
+              {SORT_OPTIONS.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => {
@@ -327,7 +308,7 @@ const EmployeesPage = () => {
                         }
                       >
                         <option value="">All Departments</option>
-                        {departments.map((dept) => (
+                        {DEPARTMENTS.map((dept) => (
                           <option key={dept} value={dept}>
                             {dept}
                           </option>
@@ -348,7 +329,7 @@ const EmployeesPage = () => {
                         }
                       >
                         <option value="">All Classes</option>
-                        {classes.map((cls) => (
+                        {CLASSES.map((cls) => (
                           <option key={cls} value={cls}>
                             {cls}
                           </option>

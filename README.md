@@ -12,6 +12,17 @@ A comprehensive web application for managing employee data with a beautiful UI a
 - **Pagination and sorting**: Efficient data navigation
 - **Context menu**: Edit, delete, and flag options for employee records
 
+## Role-Based Permissions
+- **Admin** has permission to:
+  - Add an employee
+  - Delete an employee
+  - Update an employee
+
+- **Employee** has permission to:
+  - View employees
+  - View their own profile
+  - Update their own profile
+
 ## Technologies Used
 
 ### Frontend
@@ -39,8 +50,8 @@ A comprehensive web application for managing employee data with a beautiful UI a
 
 1. Clone the repository:
 ```
-git clone https://github.com/yourusername/employee-management-system.git
-cd employee-management-system
+git clone url
+cd path/to/project
 ```
 
 2. Install dependencies:
@@ -59,6 +70,13 @@ PORT=4000
 ```
 npm run dev
 ```
+
+5. Running Tests
+To run tests in both the frontend and backend, use the following command:
+
+```
+npm run test
+
 
 ## Project Structure
 

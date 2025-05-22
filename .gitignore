@@ -34,3 +34,9 @@ dist-ssr
 /build
 /frontend/build
 /backend/dist
+/backend/node_modules
+/backend/__mocks__
+/backend/coverage
+/frontend/node_modules
+/frontend/__mocks__
+/frontend/coverage

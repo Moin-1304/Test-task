@@ -1,62 +1,61 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/client';
-import { 
-  ArrowLeft, UserCheck, Mail, Phone, Calendar, Briefcase, School, Book, 
-  Edit, MoreHorizontal, Building, MapPin, Flag, Trash2, 
-  Award, FileText, Loader2, Users, HeartPulse
-} from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  ArrowLeft,
+  UserCheck,
+  Mail,
+  Phone,
+  Calendar,
+  Briefcase,
+  School,
+  Book,
+  Edit,
+  MoreHorizontal,
+  Building,
+  MapPin,
+  Flag,
+  Trash2,
+  Award,
+  FileText,
+  Loader2,
+  Users,
+  HeartPulse,
+} from "lucide-react";
+import toast from "react-hot-toast";
 import { EditEmployeeModal } from "./edit-employee-modal";
-import { cn } from '../../utils/cn';
+import { cn } from "../../utils/cn";
 import { GET_EMPLOYEE, DELETE_EMPLOYEE } from "@/utils/mutations";
-
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  age: number;
-  class: string;
-  attendance: number;
-  subjects: string[];
-  department: string;
-  position: string;
-  joinDate: string;
-  address: string;
-  bio: string;
-  education: string[];
-  skills: string[];
-  performance: number;
-  notes: string;
-  profileImage?: string;
-}
-
+import { Employee } from "../../types/employee";
+import { EMPLOYEE_TABS } from "../../constants/employee";
+import InfoItem from "../../components/common/InfoItem";
+import { useAuth } from "@/hooks/useAuth";
 const EmployeeDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  
+
   // Fetch employee data
   const { loading, data, refetch } = useQuery(GET_EMPLOYEE, {
     variables: { id },
     onError: (error) => {
-      toast.error(error.message || 'Failed to fetch employee details');
-      navigate('/employees');
-    }
+      toast.error(error.message || "Failed to fetch employee details");
+      navigate("/employees");
+    },
   });
   const [deleteEmployeeMutation] = useMutation(DELETE_EMPLOYEE);
-  
+
   const employee = data?.getEmployee as Employee | undefined;
-  
+
   // Action menu for options
   const ActionMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
-    
+
     const handleAction = async (action: string) => {
       setIsOpen(false);
-      
+
       switch (action) {
         case "edit":
           setIsEditModalOpen(true);
@@ -82,36 +81,37 @@ const EmployeeDetailsPage = () => {
           break;
       }
     };
-    
+
     return (
       <div className="relative">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
+        {
+          user?.role === "ADMIN" && (
+            <button
+              onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-full hover:bg-gray-100 text-gray-500"
         >
-          <MoreHorizontal className="h-5 w-5" />
-        </button>
-        
+            <MoreHorizontal className="h-5 w-5" />
+          </button>
+        )}
+
         {isOpen && (
-          <div
-            className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in"
-          >
+          <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in">
             <button
-              onClick={() => handleAction('edit')}
+              onClick={() => handleAction("edit")}
               className="menu-item w-full text-left flex items-center"
             >
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </button>
             <button
-              onClick={() => handleAction('flag')}
+              onClick={() => handleAction("flag")}
               className="menu-item w-full text-left flex items-center"
             >
               <Flag className="mr-2 h-4 w-4" />
               Flag
             </button>
             <button
-              onClick={() => handleAction('delete')}
+              onClick={() => handleAction("delete")}
               className="menu-item w-full text-left flex items-center text-error-600 hover:text-error-800 hover:bg-error-50"
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -119,27 +119,6 @@ const EmployeeDetailsPage = () => {
             </button>
           </div>
         )}
-      </div>
-    );
-  };
-  
-  // Info item component
-  const InfoItem = ({ icon: Icon, label, value }: { 
-    icon: React.FC<{ className?: string }>, 
-    label: string, 
-    value: string | number | string[] 
-  }) => {
-    const displayValue = Array.isArray(value) ? value.join(', ') : value;
-    
-    return (
-      <div className="flex items-start">
-        <div className="flex-shrink-0 mt-1">
-          <Icon className="h-5 w-5 text-gray-400" />
-        </div>
-        <div className="ml-3">
-          <p className="text-sm font-medium text-gray-500">{label}</p>
-          <p className="text-sm text-gray-900">{displayValue}</p>
-        </div>
       </div>
     );
   };
@@ -160,10 +139,14 @@ const EmployeeDetailsPage = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Employee not found</h2>
-          <p className="mt-2 text-gray-500">The employee you're looking for does not exist or has been removed.</p>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Employee not found
+          </h2>
+          <p className="mt-2 text-gray-500">
+            The employee you're looking for does not exist or has been removed.
+          </p>
           <button
-            onClick={() => navigate('/employees')}
+            onClick={() => navigate("/employees")}
             className="mt-4 btn-primary"
           >
             Go back to employees
@@ -261,13 +244,7 @@ const EmployeeDetailsPage = () => {
           {/* Tabs */}
           <div className="border-t border-gray-200">
             <div className="flex overflow-x-auto">
-              {[
-                "overview",
-                "performance",
-                "attendance",
-                "documents",
-                "notes",
-              ].map((tab) => (
+              {EMPLOYEE_TABS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -319,6 +296,7 @@ const EmployeeDetailsPage = () => {
                 <InfoItem
                   icon={MapPin}
                   label="Address"
+                  // @ts-ignore
                   value={employee.address}
                 />
               </div>
@@ -328,7 +306,7 @@ const EmployeeDetailsPage = () => {
             <div className="bg-white shadow-card rounded-lg p-6 animate-fade-in">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Skills</h2>
               <div className="flex flex-wrap gap-2">
-                {employee.skills.map((skill, index) => (
+                {employee.skills?.map((skill, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center rounded-full bg-primary-50 px-3 py-0.5 text-sm font-medium text-primary-700"
@@ -358,7 +336,7 @@ const EmployeeDetailsPage = () => {
                     Education
                   </h2>
                   <ul className="space-y-4">
-                    {employee.education.map((edu, index) => (
+                    {employee.education?.map((edu, index) => (
                       <li key={index} className="flex">
                         <div className="flex-shrink-0">
                           <div className="flex items-center justify-center h-10 w-10 rounded-md bg-primary-100 text-primary-600">
@@ -457,7 +435,8 @@ const EmployeeDetailsPage = () => {
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
                       className="bg-primary-600 h-2.5 rounded-full"
-                      style={{ width: `${employee.performance * 10}%` }}
+                      // @ts-ignore
+                      style={{ width: `${employee?.performance * 10}%` }}
                     ></div>
                   </div>
                 </div>

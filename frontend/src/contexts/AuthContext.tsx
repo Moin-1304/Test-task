@@ -1,22 +1,6 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
-import { jwtDecode } from 'jwt-decode';
-
-// Define the user type
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'employee';
-}
-
-// Define the auth context type
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  loading: boolean;
-  login: (token: string) => void;
-  logout: () => void;
-}
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { jwtDecode } from "jwt-decode";
+import { User, AuthContextType } from "../types/auth";
 
 // Create the auth context
 export const AuthContext = createContext<AuthContextType>({
@@ -39,14 +23,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Check if the user is already logged in on mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         const decoded = jwtDecode<{ user: User }>(token);
         setUser(decoded.user);
       } catch (error) {
-        console.error('Invalid token:', error);
-        localStorage.removeItem('token');
+        console.error("Invalid token:", error);
+        localStorage.removeItem("token");
       }
     }
     setLoading(false);
@@ -54,18 +38,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Login function
   const login = (token: string) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem("token", token);
     try {
       const decoded = jwtDecode<{ user: User }>(token);
       setUser(decoded.user);
     } catch (error) {
-      console.error('Invalid token:', error);
+      console.error("Invalid token:", error);
     }
   };
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 

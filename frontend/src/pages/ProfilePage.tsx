@@ -1,27 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { User, Mail, Lock, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const UPDATE_PROFILE = gql`
-  mutation UpdateProfile($input: UpdateProfileInput!) {
-    updateProfile(input: $input) {
-      id
-      name
-      email
-    }
-  }
-`;
-
-const CHANGE_PASSWORD = gql`
-  mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
-    changePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
-      success
-      message
-    }
-  }
-`;
+import { UPDATE_PROFILE, CHANGE_PASSWORD } from "@/utils/mutations";
 
 const ProfilePage = () => {
   const { user } = useAuth();

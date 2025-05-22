@@ -1,28 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { X, Plus, Trash, Calendar } from "lucide-react";
+import { X, Plus, Trash } from "lucide-react";
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
 import { CREATE_EMPLOYEE } from "@/utils/mutations";
-
-interface EmployeeFormData {
-  name: string;
-  email: string;
-  phone: string;
-  age: number;
-  class: string;
-  attendance: number;
-  subjects: string[];
-  department: string;
-  position: string;
-  joinDate: string;
-  address: string;
-  bio: string;
-  education: string[];
-  skills: string[];
-  performance: number;
-  notes: string;
-  profileImage: string;
-}
+import { EmployeeFormData } from "../../types/employee";
+import InputField from "@/components/common/InputField";
+import SelectField from "@/components/common/SelectField";
+import TextAreaField from "@/components/common/TextAreaField";
+import SectionHeader from "@/components/common/SectionHeader";
 
 export function AddEmployeeModal({
   open,
@@ -112,7 +97,7 @@ export function AddEmployeeModal({
   ) => {
     if (!value.trim()) return;
 
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: [...prev[field], value.trim()],
     }));
@@ -123,9 +108,9 @@ export function AddEmployeeModal({
     field: "subjects" | "education" | "skills",
     index: number
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
+      [field]: prev[field].filter((_: any, i: any) => i !== index),
     }));
   };
 
@@ -193,108 +178,48 @@ export function AddEmployeeModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Basic Information */}
             <div className="space-y-5 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-indigo-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Basic Information
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-indigo-600">
+                Basic Information
+              </SectionHeader>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label
-                    htmlFor="name"
-                    className={`block text-sm font-medium ${
-                      errors.name
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  <InputField
                     id="name"
-                    type="text"
+                    label="Name"
                     value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
-                    placeholder="Enter employee name"
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.name
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.name
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200`}
+                    error={errors.name}
+                    required
                   />
-                  {errors.name && (
-                    <p className="text-sm text-red-500 mt-1">{errors.name}</p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className={`block text-sm font-medium ${
-                      errors.email
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  <InputField
                     id="email"
+                    label="Email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
-                    placeholder="email@example.com"
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.email
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.email
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200`}
+                    error={errors.email}
+                    required
                   />
-                  {errors.email && (
-                    <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Phone
-                  </label>
-                  <input
+                  <InputField
                     id="phone"
+                    label="Phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
-                    placeholder="(123) 456-7890"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="age"
-                    className={`block text-sm font-medium ${
-                      errors.age
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Age <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  <InputField
                     id="age"
+                    label="Age"
                     type="number"
                     min={18}
                     max={100}
@@ -302,166 +227,77 @@ export function AddEmployeeModal({
                     onChange={(e) =>
                       handleChange("age", Number.parseInt(e.target.value) || 18)
                     }
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.age
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.age
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200`}
+                    error={errors.age}
+                    required
                   />
-                  {errors.age && (
-                    <p className="text-sm text-red-500 mt-1">{errors.age}</p>
-                  )}
                 </div>
               </div>
             </div>
 
             {/* Employment Details */}
             <div className="space-y-5 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-emerald-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Employment Details
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-emerald-600">
+                Employment Details
+              </SectionHeader>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label
-                    htmlFor="class"
-                    className={`block text-sm font-medium ${
-                      errors.class
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Class <span className="text-red-500">*</span>
-                  </label>
-                  <select
+                  <SelectField
                     id="class"
+                    label="Class"
                     value={formData.class}
                     onChange={(e) => handleChange("class", e.target.value)}
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.class
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.class
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200 appearance-none`}
-                  >
-                    <option value="">Select class</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Mid-level">Mid-level</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Intern">Intern</option>
-                  </select>
-                  {errors.class && (
-                    <p className="text-sm text-red-500 mt-1">{errors.class}</p>
-                  )}
+                    error={errors.class}
+                    required
+                    options={[
+                      { value: "", label: "Select class" },
+                      { value: "Senior", label: "Senior" },
+                      { value: "Mid-level", label: "Mid-level" },
+                      { value: "Junior", label: "Junior" },
+                      { value: "Intern", label: "Intern" },
+                    ]}
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="department"
-                    className={`block text-sm font-medium ${
-                      errors.department
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Department <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  <InputField
                     id="department"
-                    type="text"
+                    label="Department"
                     value={formData.department}
                     onChange={(e) => handleChange("department", e.target.value)}
-                    placeholder="Enter department"
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.department
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.department
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200`}
+                    error={errors.department}
+                    required
                   />
-                  {errors.department && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.department}
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="position"
-                    className={`block text-sm font-medium ${
-                      errors.position
-                        ? "text-red-500"
-                        : "text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    Position <span className="text-red-500">*</span>
-                  </label>
-                  <input
+                  <InputField
                     id="position"
-                    type="text"
+                    label="Position"
                     value={formData.position}
                     onChange={(e) => handleChange("position", e.target.value)}
-                    placeholder="Enter position"
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.position
-                        ? "border-red-500"
-                        : "border-gray-300 dark:border-gray-600"
-                    } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${
-                      errors.position
-                        ? "focus:ring-red-500"
-                        : "focus:ring-indigo-500 dark:focus:ring-indigo-400"
-                    } focus:border-transparent transition-shadow duration-200`}
+                    error={errors.position}
+                    required
                   />
-                  {errors.position && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.position}
-                    </p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="joinDate"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Join Date
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="joinDate"
-                      type="date"
-                      value={formData.joinDate}
-                      onChange={(e) => handleChange("joinDate", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200"
-                    />
-                    <Calendar className="absolute right-3 top-3.5 h-5 w-5 text-gray-400 dark:text-gray-500 pointer-events-none" />
-                  </div>
+                  <InputField
+                    id="joinDate"
+                    label="Join Date"
+                    type="date"
+                    value={formData.joinDate}
+                    onChange={(e) => handleChange("joinDate", e.target.value)}
+                  />
                 </div>
               </div>
             </div>
 
             {/* Performance Metrics */}
             <div className="space-y-5 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Performance Metrics
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-amber-600">
+                Performance Metrics
+              </SectionHeader>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
@@ -530,12 +366,7 @@ export function AddEmployeeModal({
 
             {/* Subjects */}
             <div className="space-y-5">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-blue-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Subjects
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-blue-600">Subjects</SectionHeader>
 
               <div className="flex gap-2">
                 <input
@@ -562,7 +393,7 @@ export function AddEmployeeModal({
               </div>
 
               <div className="flex flex-wrap gap-2 mt-3">
-                {formData.subjects.map((subject, index) => (
+                {formData.subjects?.map((subject, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 transition-all duration-200 hover:bg-blue-200 dark:hover:bg-blue-800"
@@ -577,7 +408,7 @@ export function AddEmployeeModal({
                     </button>
                   </span>
                 ))}
-                {formData.subjects.length === 0 && (
+                {formData.subjects?.length === 0 && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 italic">
                     No subjects added
                   </p>
@@ -587,12 +418,7 @@ export function AddEmployeeModal({
 
             {/* Skills */}
             <div className="space-y-5">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-green-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Skills
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-green-600">Skills</SectionHeader>
 
               <div className="flex gap-2">
                 <input
@@ -619,7 +445,7 @@ export function AddEmployeeModal({
               </div>
 
               <div className="flex flex-wrap gap-2 mt-3">
-                {formData.skills.map((skill, index) => (
+                {formData.skills?.map((skill, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 transition-all duration-200 hover:bg-green-200 dark:hover:bg-green-800"
@@ -634,7 +460,7 @@ export function AddEmployeeModal({
                     </button>
                   </span>
                 ))}
-                {formData.skills.length === 0 && (
+                {formData.skills?.length === 0 && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 italic">
                     No skills added
                   </p>
@@ -644,12 +470,9 @@ export function AddEmployeeModal({
 
             {/* Education */}
             <div className="space-y-5 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-purple-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Education
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-purple-600">
+                Education
+              </SectionHeader>
 
               <div className="flex gap-2">
                 <input
@@ -678,7 +501,7 @@ export function AddEmployeeModal({
               </div>
 
               <div className="space-y-3">
-                {formData.education.map((edu, index) => (
+                {formData.education?.map((edu, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors duration-200"
@@ -696,7 +519,7 @@ export function AddEmployeeModal({
                     </button>
                   </div>
                 ))}
-                {formData.education.length === 0 && (
+                {formData.education?.length === 0 && (
                   <p className="text-sm text-gray-500 dark:text-gray-400 italic p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                     No education history added
                   </p>
@@ -706,81 +529,49 @@ export function AddEmployeeModal({
 
             {/* Additional Information */}
             <div className="space-y-5 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-1 bg-pink-600 rounded-full"></div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Additional Information
-                </h3>
-              </div>
+              <SectionHeader colorClass="bg-pink-600">
+                Additional Information
+              </SectionHeader>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label
-                    htmlFor="address"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Address
-                  </label>
-                  <input
+                  <InputField
                     id="address"
-                    type="text"
+                    label="Address"
                     value={formData.address}
                     onChange={(e) => handleChange("address", e.target.value)}
-                    placeholder="Street address"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="profileImage"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Profile Image URL
-                  </label>
-                  <input
+                  <InputField
                     id="profileImage"
-                    type="text"
+                    label="Profile Image URL"
                     value={formData.profileImage}
+                    disabled
                     onChange={(e) =>
                       handleChange("profileImage", e.target.value)
                     }
-                    placeholder="https://example.com/image.jpg"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200"
                   />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label
-                    htmlFor="bio"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Bio
-                  </label>
-                  <textarea
+                  <TextAreaField
                     id="bio"
+                    label="Bio"
                     value={formData.bio}
                     onChange={(e) => handleChange("bio", e.target.value)}
-                    placeholder="Brief description about the employee"
                     rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200 resize-y"
                   />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label
-                    htmlFor="notes"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Notes
-                  </label>
-                  <textarea
+                  <TextAreaField
                     id="notes"
+                    label="Notes"
                     value={formData.notes}
                     onChange={(e) => handleChange("notes", e.target.value)}
-                    placeholder="Additional notes or comments"
                     rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow duration-200 resize-y"
                   />
                 </div>
               </div>

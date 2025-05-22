@@ -38,7 +38,7 @@ const userResolvers = {
       // Check if email is already in use
       const existingUser = await User.findOne({ email });
       if (existingUser) {
-        throw new UserInputError('Email is already in use');
+        throw new UserInputError('Email already exists');
       }
       
       // Create new user
@@ -111,7 +111,7 @@ const userResolvers = {
       if (email) {
         const existingUser = await User.findOne({ email, _id: { $ne: user.id } });
         if (existingUser) {
-          throw new UserInputError('Email is already in use');
+          throw new UserInputError('Email already exists');
         }
       }
       
