@@ -37,7 +37,6 @@ const MainLayout = () => {
       icon: Users,
       subItems: [
         { name: "All Employees", href: "/employees" },
-        { name: "Add Employee", href: "/employees/add" },
       ],
     },
     { name: "Settings", href: "/settings", icon: Settings },

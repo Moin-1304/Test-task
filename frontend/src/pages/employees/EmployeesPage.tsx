@@ -1,50 +1,22 @@
-import { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { Link } from 'react-router-dom';
-import { 
-  Search, UserPlus, GridIcon, LayoutList, 
-  Filter, ChevronDown, MoreHorizontal, Edit, Flag, Trash2, 
-  SortAsc, SortDesc, Loader2,
-  Users
-} from 'lucide-react';
-import toast from 'react-hot-toast';
-import { cn } from '../../utils/cn';
+import { useState } from "react";
+import { useQuery } from "@apollo/client";
+import { Link } from "react-router-dom";
+import {
+  Search,
+  UserPlus,
+  GridIcon,
+  LayoutList,
+  Filter,
+  ChevronDown,
+  SortAsc,
+  SortDesc,
+  Loader2,
+  Users,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { cn } from "../../utils/cn";
 import { AddEmployeeModal } from "./employee-modal";
-
-// GraphQL query to fetch employees with filtering, sorting and pagination
-const GET_EMPLOYEES = gql`
-  query GetEmployees(
-    $page: Int
-    $limit: Int
-    $filter: EmployeeFilterInput
-    $sortBy: String
-    $sortOrder: SortOrder
-  ) {
-    getEmployees(
-      page: $page
-      limit: $limit
-      filter: $filter
-      sortBy: $sortBy
-      sortOrder: $sortOrder
-    ) {
-      employees {
-        id
-        name
-        email
-        age
-        class
-        attendance
-        subjects
-        department
-        position
-        joinDate
-        profileImage
-      }
-      totalCount
-      totalPages
-    }
-  }
-`;
+import { GET_EMPLOYEES } from "@/utils/mutations";
 
 // Employee interface
 interface Employee {
@@ -62,33 +34,32 @@ interface Employee {
 }
 
 // View type
-type ViewType = 'grid' | 'list';
+type ViewType = "grid" | "list";
 
 const EmployeesPage = () => {
   // State for view, filtering, sorting and pagination
-  const [viewType, setViewType] = useState<ViewType>('grid');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('ASC');
+  const [viewType, setViewType] = useState<ViewType>("grid");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC");
   const [page, setPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
-    department: '',
-    class: ''
+    department: "",
+    class: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log(isModalOpen,'1111')
-  
+
   // Options for filters and sorting
-  const departments = ['Engineering', 'Marketing', 'Sales', 'Finance', 'HR'];
-  const classes = ['Senior', 'Mid-level', 'Junior', 'Intern'];
+  const departments = ["Engineering", "Marketing", "Sales", "Finance", "HR"];
+  const classes = ["Senior", "Mid-level", "Junior", "Intern"];
   const sortOptions = [
-    { value: 'name', label: 'Name' },
-    { value: 'age', label: 'Age' },
-    { value: 'attendance', label: 'Attendance' },
-    { value: 'joinDate', label: 'Join Date' }
+    { value: "name", label: "Name" },
+    { value: "age", label: "Age" },
+    { value: "attendance", label: "Attendance" },
+    { value: "joinDate", label: "Join Date" },
   ];
-  
+
   // Fetch employees data
   const { loading, data, refetch } = useQuery(GET_EMPLOYEES, {
     variables: {
@@ -97,120 +68,44 @@ const EmployeesPage = () => {
       filter: {
         search: searchTerm,
         department: filters.department || undefined,
-        class: filters.class || undefined
+        class: filters.class || undefined,
       },
       sortBy,
-      sortOrder
+      sortOrder,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: "cache-and-network",
     onError: (error) => {
-      toast.error(error.message || 'Failed to fetch employees');
-    }
+      toast.error(error.message || "Failed to fetch employees");
+    },
   });
-  
+
   // Extract data
   const employees = data?.getEmployees.employees || [];
   const totalPages = data?.getEmployees.totalPages || 0;
 
-  const handleAddEmployee = (data: any) => {
-    // In a real app, you would submit this data to your API
-    console.log("Adding employee:", data);
-
-    // Example of how you might call a mutation
-    // addEmployeeMutation({ variables: { input: data } })
-
-    // Show success message
-    alert("Employee added successfully!");
-  };
-  
   // Toggle sort order
   const toggleSortOrder = () => {
-    setSortOrder(prev => prev === 'ASC' ? 'DESC' : 'ASC');
+    setSortOrder((prev) => (prev === "ASC" ? "DESC" : "ASC"));
   };
-  
+
   // Apply filters
   const applyFilters = () => {
     setPage(1);
     refetch();
     setFilterOpen(false);
   };
-  
+
   // Reset filters
   const resetFilters = () => {
     setFilters({
-      department: '',
-      class: ''
+      department: "",
+      class: "",
     });
     setPage(1);
     refetch();
     setFilterOpen(false);
   };
-  
-  // Action menu for employee cards/rows
-  const ActionMenu = ({ }: { id: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    
-    const handleAction = (action: string) => {
-      setIsOpen(false);
-      
-      switch (action) {
-        case 'edit':
-          toast.success('Edit feature coming soon');
-          break;
-        case 'flag':
-          toast.success('Employee flagged successfully');
-          break;
-        case 'delete':
-          toast.success('Delete feature coming soon');
-          break;
-        default:
-          break;
-      }
-    };
-    
-    return (
-      <div className="relative">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsOpen(!isOpen);
-          }}
-          className="p-1 rounded-full hover:bg-gray-100 text-gray-500"
-        >
-          <MoreHorizontal className="h-5 w-5" />
-        </button>
-        
-        {isOpen && (
-          <div
-            className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in"
-          >
-            <button
-              onClick={() => handleAction('edit')}
-              className="menu-item w-full text-left flex items-center"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </button>
-            <button
-              onClick={() => handleAction('flag')}
-              className="menu-item w-full text-left flex items-center"
-            >
-              <Flag className="mr-2 h-4 w-4" />
-              Flag
-            </button>
-            <button
-              onClick={() => handleAction('delete')}
-              className="menu-item w-full text-left flex items-center text-error-600 hover:text-error-800 hover:bg-error-50"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
-  
+
   // Grid view - Employee card component
   const EmployeeCard = ({ employee }: { employee: Employee }) => {
     return (
@@ -240,9 +135,8 @@ const EmployeesPage = () => {
               <p className="text-sm text-gray-500">{employee.position}</p>
             </div>
           </div>
-          <ActionMenu id={employee.id} />
         </div>
-        
+
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div>
             <p className="text-xs text-gray-500">Department</p>
@@ -259,11 +153,11 @@ const EmployeesPage = () => {
           <div>
             <p className="text-xs text-gray-500">Subjects</p>
             <p className="text-sm font-medium truncate">
-              {employee.subjects?.join(', ')}
+              {employee.subjects?.join(", ")}
             </p>
           </div>
         </div>
-        
+
         <div className="mt-4 pt-4 border-t border-gray-100">
           <div className="flex justify-between items-center">
             <div>
@@ -275,13 +169,13 @@ const EmployeesPage = () => {
       </Link>
     );
   };
-  
+
   // List view - Table row component
   const EmployeeRow = ({ employee }: { employee: Employee }) => {
     return (
       <tr
         className="hover:bg-gray-50 cursor-pointer"
-        onClick={() => window.location.href = `/employees/${employee.id}`}
+        onClick={() => (window.location.href = `/employees/${employee.id}`)}
       >
         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
           <div className="flex items-center">
@@ -318,9 +212,7 @@ const EmployeesPage = () => {
         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
           {employee.attendance}%
         </td>
-        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-          <ActionMenu id={employee.id} />
-        </td>
+        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"></td>
       </tr>
     );
   };
@@ -348,7 +240,6 @@ const EmployeesPage = () => {
           <AddEmployeeModal
             open={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            onSubmit={handleAddEmployee}
           />
         </div>
       </div>

@@ -1,19 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { BarChart3, Users, Briefcase, Clock, Calendar, TrendingUp, Activity } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-
-// GraphQL queries
-const GET_DASHBOARD_STATS = gql`
-  query GetDashboardStats {
-    dashboardStats {
-      totalEmployees
-      newEmployees
-      attendanceRate
-      departmentsCount
-    }
-  }
-`;
+import { GET_DASHBOARD_STATS } from "@/utils/mutations";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -28,7 +17,7 @@ const DashboardPage = () => {
   }, []);
 
   // Fetch dashboard data
-  const { data, loading } = useQuery(GET_DASHBOARD_STATS, {
+  const { data } = useQuery(GET_DASHBOARD_STATS, {
     fetchPolicy: 'network-only'
   });
 

@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useMutation, gql } from '@apollo/client';
-import { Mail, Lock, User, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation, gql } from "@apollo/client";
+import { Mail, Lock, User, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from "../../hooks/useAuth";
 
 // GraphQL mutation
 const REGISTER = gql`
@@ -19,59 +19,63 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "EMPLOYEE",
   });
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState("");
 
   // Register mutation
   const [registerMutation, { loading }] = useMutation(REGISTER, {
     onCompleted: (data) => {
       const { token } = data.register;
       login(token);
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      toast.success("Account created successfully!");
+      navigate("/dashboard");
     },
     onError: (error) => {
-      toast.error(error.message || 'Registration failed. Please try again.');
+      toast.error(error.message || "Registration failed. Please try again.");
     },
   });
 
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear password error when typing
-    if (name === 'password' || name === 'confirmPassword') {
-      setPasswordError('');
+    if (name === "password" || name === "confirmPassword") {
+      setPasswordError("");
     }
   };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      setPasswordError('Passwords do not match');
+      setPasswordError("Passwords do not match");
       return;
     }
-    
+
     // Validate password strength
     if (formData.password.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
+      setPasswordError("Password must be at least 8 characters");
       return;
     }
-    
+
     registerMutation({
       variables: {
         input: {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role,
         },
       },
     });
@@ -79,8 +83,10 @@ const RegisterPage = () => {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 animate-fade-in">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Create your account</h2>
-      
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        Create your account
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="name" className="label">
@@ -140,13 +146,19 @@ const RegisterPage = () => {
               type="password"
               autoComplete="new-password"
               required
-              className={`input pl-10 ${passwordError ? 'border-error-500 focus:ring-error-500 focus:border-error-500' : ''}`}
+              className={`input pl-10 ${
+                passwordError
+                  ? "border-error-500 focus:ring-error-500 focus:border-error-500"
+                  : ""
+              }`}
               placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
             />
           </div>
-          <p className="text-xs mt-1 text-gray-500">Password must be at least 8 characters</p>
+          <p className="text-xs mt-1 text-gray-500">
+            Password must be at least 8 characters
+          </p>
         </div>
 
         <div>
@@ -163,7 +175,11 @@ const RegisterPage = () => {
               type="password"
               autoComplete="new-password"
               required
-              className={`input pl-10 ${passwordError ? 'border-error-500 focus:ring-error-500 focus:border-error-500' : ''}`}
+              className={`input pl-10 ${
+                passwordError
+                  ? "border-error-500 focus:ring-error-500 focus:border-error-500"
+                  : ""
+              }`}
               placeholder="••••••••"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -172,6 +188,24 @@ const RegisterPage = () => {
           {passwordError && (
             <p className="text-xs mt-1 text-error-600">{passwordError}</p>
           )}
+        </div>
+
+        <div>
+          <label htmlFor="role" className="label">
+            Select Role
+          </label>
+          <div className="relative">
+            <select
+              id="role"
+              name="role"
+              className="input pl-3 pr-10"
+              value={formData.role}
+              onChange={handleChange}
+            >
+              <option value="EMPLOYEE">Employee</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
         </div>
 
         <div>
@@ -186,7 +220,7 @@ const RegisterPage = () => {
                 Creating account...
               </>
             ) : (
-              'Create account'
+              "Create account"
             )}
           </button>
         </div>

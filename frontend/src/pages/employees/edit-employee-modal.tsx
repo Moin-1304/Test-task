@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Plus, Trash, Calendar } from "lucide-react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { UPDATE_EMPLOYEE } from "@/utils/mutations";
 
 interface EmployeeFormData {
   id: string;
@@ -24,32 +25,6 @@ interface EmployeeFormData {
   notes: string;
   profileImage: string;
 }
-
-const UPDATE_EMPLOYEE = gql`
-  mutation UpdateEmployee($id: ID!, $input: EmployeeInput!) {
-    updateEmployee(id: $id, input: $input) {
-      id
-      name
-      email
-      phone
-      age
-      class
-      attendance
-      subjects
-      department
-      position
-      joinDate
-      address
-      bio
-      education
-      skills
-      performance
-      notes
-      profileImage
-      updatedAt
-    }
-  }
-`;
 
 export function EditEmployeeModal({
   open,

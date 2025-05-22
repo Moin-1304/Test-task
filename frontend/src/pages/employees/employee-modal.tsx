@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Plus, Trash, Calendar } from "lucide-react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { CREATE_EMPLOYEE } from "@/utils/mutations";
 
 interface EmployeeFormData {
   name: string;
@@ -24,43 +24,13 @@ interface EmployeeFormData {
   profileImage: string;
 }
 
-const CREATE_EMPLOYEE = gql`
-  mutation CreateEmployee($input: EmployeeInput!) {
-    createEmployee(input: $input) {
-      id
-      name
-      email
-      phone
-      age
-      class
-      attendance
-      subjects
-      department
-      position
-      joinDate
-      address
-      bio
-      education
-      skills
-      performance
-      notes
-      profileImage
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
 export function AddEmployeeModal({
   open,
   onClose,
-  onSubmit,
 }: {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: EmployeeFormData) => void;
 }) {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState<EmployeeFormData>({
     name: "",
     email: "",
@@ -188,7 +158,7 @@ export function AddEmployeeModal({
         if (data?.createEmployee) {
           toast.success("Employee created successfully");
           onClose();
-          navigate("/employees");
+          window.location.reload();
         }
       } catch (error: any) {
         toast.error(error?.message || "Failed to create employee");

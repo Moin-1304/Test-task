@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { 
   ArrowLeft, UserCheck, Mail, Phone, Calendar, Briefcase, School, Book, 
   Edit, MoreHorizontal, Building, MapPin, Flag, Trash2, 
@@ -8,40 +8,8 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { EditEmployeeModal } from "./edit-employee-modal";
-
 import { cn } from '../../utils/cn';
-
-// GraphQL query to fetch employee details
-const GET_EMPLOYEE = gql`
-  query GetEmployee($id: ID!) {
-    getEmployee(id: $id) {
-      id
-      name
-      email
-      phone
-      age
-      class
-      attendance
-      subjects
-      department
-      position
-      joinDate
-      address
-      bio
-      education
-      skills
-      performance
-      notes
-      profileImage
-    }
-  }
-`;
-
-const DELETE_EMPLOYEE = gql`
-  mutation DeleteEmployee($id: ID!) {
-    deleteEmployee(id: $id)
-  }
-`;
+import { GET_EMPLOYEE, DELETE_EMPLOYEE } from "@/utils/mutations";
 
 interface Employee {
   id: string;
