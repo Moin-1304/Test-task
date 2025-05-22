@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 export const Role = {
-  ADMIN: 'ADMIN',
-  EMPLOYEE : 'EMPLOYEE'
-}
+  ADMIN: "ADMIN",
+  EMPLOYEE: "EMPLOYEE",
+};
 
 // User schema
 const userSchema = new mongoose.Schema(
@@ -38,10 +38,10 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
-userSchema.pre('save', async function (next) {
+userSchema.pre("save", async function (next) {
   // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) return next();
-  
+  if (!this.isModified("password")) return next();
+
   try {
     // Generate a salt and hash the password
     const salt = await bcrypt.genSalt(10);
@@ -58,6 +58,6 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 // Create User model
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

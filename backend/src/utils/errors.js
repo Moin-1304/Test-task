@@ -2,20 +2,20 @@
 export class AuthenticationError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
 export class ForbiddenError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'ForbiddenError';
+    this.name = "ForbiddenError";
   }
 }
 
 export class UserInputError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'UserInputError';
+    this.name = "UserInputError";
   }
 }

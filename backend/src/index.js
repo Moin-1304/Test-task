@@ -1,14 +1,14 @@
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import express from 'express';
-import http from 'node:http';
-import cors from 'cors';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { typeDefs } from './schema/index.js';
-import { resolvers } from './resolvers/index.js';
-import { verifyToken } from './middleware/auth.js';
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import express from "express";
+import http from "node:http";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { typeDefs } from "./schema/index.js";
+import { resolvers } from "./resolvers/index.js";
+import { verifyToken } from "./middleware/auth.js";
 
 // Load environment variables
 dotenv.config();
@@ -18,12 +18,14 @@ const app = express();
 const httpServer = http.createServer(app);
 
 // Database connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/employee-management';
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/employee-management";
 
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => {
-    console.error('Failed to connect to MongoDB', err);
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
     process.exit(1);
   });
 
@@ -38,27 +40,27 @@ const server = new ApolloServer({
 // Start the server
 const startServer = async () => {
   await server.start();
-  
+
   app.use(
-    '/graphql',
+    "/graphql",
     cors(),
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
         // Extract the token from the Authorization header
-        const token = req.headers.authorization?.split(' ')[1] || '';
-        
+        const token = req.headers.authorization?.split(" ")[1] || "";
+
         // Verify token and get user
         const user = token ? await verifyToken(token) : null;
-        
+
         return { user };
       },
-    }),
+    })
   );
 
   // Set up other routes
-  app.get('/', (req, res) => {
-    res.send('Employee Management System API');
+  app.get("/", (req, res) => {
+    res.send("Employee Management System API");
   });
 
   // Start the HTTP server
@@ -68,5 +70,5 @@ const startServer = async () => {
 };
 
 startServer().catch((err) => {
-  console.error('Failed to start server:', err);
+  console.error("Failed to start server:", err);
 });

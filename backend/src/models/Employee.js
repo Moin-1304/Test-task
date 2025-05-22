@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 // Employee schema
 const employeeSchema = new mongoose.Schema(
@@ -26,7 +26,7 @@ const employeeSchema = new mongoose.Schema(
     },
     class: {
       type: String,
-      enum: ['Senior', 'Mid-level', 'Junior', 'Intern'],
+      enum: ["Senior", "Mid-level", "Junior", "Intern"],
     },
     attendance: {
       type: Number,
@@ -87,17 +87,15 @@ const employeeSchema = new mongoose.Schema(
 );
 
 // Create text index for search
-employeeSchema.index(
-  { 
-    name: 'text', 
-    email: 'text', 
-    department: 'text', 
-    position: 'text', 
-    class: 'text' 
-  }
-);
+employeeSchema.index({
+  name: "text",
+  email: "text",
+  department: "text",
+  position: "text",
+  class: "text",
+});
 
 // Create Employee model
-const Employee = mongoose.model('Employee', employeeSchema);
+const Employee = mongoose.model("Employee", employeeSchema);
 
 export default Employee;
