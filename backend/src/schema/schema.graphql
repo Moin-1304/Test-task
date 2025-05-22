@@ -1,0 +1,141 @@
+# User related types
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  role: Role!
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+type AuthPayload {
+  token: String!
+}
+
+type PasswordChangeResponse {
+  success: Boolean!
+  message: String!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+  role: Role
+}
+
+input UpdateProfileInput {
+  name: String
+  email: String
+}
+
+# Employee related types
+type Employee {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  age: Int
+  class: String
+  attendance: Float
+  subjects: [String]
+  department: String
+  position: String
+  joinDate: String
+  address: String
+  bio: String
+  education: [String]
+  skills: [String]
+  performance: Float
+  notes: String
+  profileImage: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type PaginatedEmployees {
+  employees: [Employee!]!
+  totalCount: Int!
+  totalPages: Int!
+}
+
+input EmployeeInput {
+  name: String!
+  email: String!
+  phone: String
+  age: Int
+  class: String
+  attendance: Float
+  subjects: [String]
+  department: String
+  position: String
+  joinDate: String
+  address: String
+  bio: String
+  education: [String]
+  skills: [String]
+  performance: Float
+  notes: String
+  profileImage: String
+}
+
+input EmployeeFilterInput {
+  search: String
+  department: String
+  class: String
+  minAge: Int
+  maxAge: Int
+  minAttendance: Float
+  maxAttendance: Float
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+# Dashboard stats
+type DashboardStats {
+  totalEmployees: Int!
+  newEmployees: Int!
+  attendanceRate: Float!
+  departmentsCount: Int!
+}
+
+# Main Schema
+type Query {
+  # User queries
+  me: User
+
+  # Employee queries
+  getEmployees(
+    page: Int
+    limit: Int
+    filter: EmployeeFilterInput
+    sortBy: String
+    sortOrder: SortOrder
+  ): PaginatedEmployees!
+  
+  getEmployee(id: ID!): Employee
+
+  # Dashboard queries
+  dashboardStats: DashboardStats!
+}
+
+type Mutation {
+  # Auth mutations
+  register(input: RegisterInput!): AuthPayload!
+  login(email: String!, password: String!): AuthPayload!
+  updateProfile(input: UpdateProfileInput!): User!
+  changePassword(currentPassword: String!, newPassword: String!): PasswordChangeResponse!
+
+  # Employee mutations
+  createEmployee(input: EmployeeInput!): Employee!
+  updateEmployee(id: ID!, input: EmployeeInput!): Employee!
+  deleteEmployee(id: ID!): Boolean!
+}
