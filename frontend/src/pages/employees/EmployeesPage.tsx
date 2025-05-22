@@ -421,65 +421,67 @@ const EmployeesPage = () => {
       {/* Employees list view */}
       {viewType === "list" && (
         <div className="mt-6 overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                >
-                  Name
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Department
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Position
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Class
-                </th>
-                <th
-                  scope="col"
-                  className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                >
-                  Attendance
-                </th>
-                <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                  <span className="sr-only">Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {employees.map((employee: Employee) => (
-                <EmployeeRow key={employee.id} employee={employee} />
-              ))}
-
-              {employees.length === 0 && !loading && (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={6} className="py-10 text-center">
-                    <Users className="h-10 w-10 text-gray-400 mx-auto" />
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">
-                      No employees found
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Try adjusting your search or filter to find what you're
-                      looking for.
-                    </p>
-                  </td>
+                  <th
+                    scope="col"
+                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Department
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Position
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Class
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Attendance
+                  </th>
+                  <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                    <span className="sr-only">Actions</span>
+                  </th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {employees.map((employee: Employee) => (
+                  <EmployeeRow key={employee.id} employee={employee} />
+                ))}
+
+                {employees.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan={6} className="py-10 text-center">
+                      <Users className="h-10 w-10 text-gray-400 mx-auto" />
+                      <h3 className="mt-2 text-sm font-medium text-gray-900">
+                        No employees found
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Try adjusting your search or filter to find what you're
+                        looking for.
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
