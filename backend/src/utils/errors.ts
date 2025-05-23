@@ -1,20 +1,20 @@
 // Define custom error classes for GraphQL
 export class AuthenticationError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "AuthenticationError";
   }
 }
 
 export class ForbiddenError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "ForbiddenError";
   }
 }
 
 export class UserInputError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "UserInputError";
   }

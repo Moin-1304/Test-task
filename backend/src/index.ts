@@ -1,8 +1,8 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import express from "express";
-import http from "node:http";
+import express, { Express, Request, Response } from "express";
+import http, { Server } from "node:http";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -14,8 +14,8 @@ import { verifyToken } from "./middleware/auth.js";
 dotenv.config();
 
 // Create Express application
-const app = express();
-const httpServer = http.createServer(app);
+const app: Express = express();
+const httpServer: Server = http.createServer(app);
 
 // Database connection
 const MONGO_URI =
@@ -24,7 +24,7 @@ const MONGO_URI =
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => {
+  .catch((err: Error) => {
     console.error("Failed to connect to MongoDB", err);
     process.exit(1);
   });
@@ -46,7 +46,7 @@ const startServer = async () => {
     cors(),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => {
+      context: async ({ req }: { req: Request }) => {
         // Extract the token from the Authorization header
         const token = req.headers.authorization?.split(" ")[1] || "";
 
@@ -59,16 +59,18 @@ const startServer = async () => {
   );
 
   // Set up other routes
-  app.get("/", (req, res) => {
+  app.get("/", (req: Request, res: Response) => {
     res.send("Employee Management System API");
   });
 
   // Start the HTTP server
-  const PORT = process.env.PORT || 4000;
-  await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+  const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: PORT }, () => resolve())
+  );
   console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
 };
 
-startServer().catch((err) => {
+startServer().catch((err: Error) => {
   console.error("Failed to start server:", err);
 });

@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from "@testing-library/react";
+import { render, act, waitFor } from "@testing-library/react";
 import { AuthProvider, AuthContext } from "./AuthContext";
 import { useContext } from "react";
 

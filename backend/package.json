@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec ts-node-esm ./src/index.js",
+    "dev": "nodemon --watch './src' --exec 'node --loader ts-node/esm' ./src/index.ts",
     "dev1": "nodemon --watch './src' --exec 'node --loader ts-node/esm' ./src/index.ts",
     "dev2": "ts-node-esm src/index.ts",
     "build": "tsc",

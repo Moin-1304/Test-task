@@ -1,10 +1,19 @@
 import Employee from "../models/Employee.js";
 import { AuthenticationError } from "../utils/errors.js";
 
+interface Context {
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  } | null;
+}
+
 const dashboardResolvers = {
   Query: {
     // Get dashboard statistics
-    dashboardStats: async (_, __, { user }) => {
+    dashboardStats: async (_: unknown, __: unknown, { user }: Context) => {
       if (!user) {
         throw new AuthenticationError("Not authenticated");
       }
